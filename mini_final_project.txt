@@ -1,0 +1,72 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 18.08.2022 23:37:25
+// Design Name: 
+// Module Name: part1
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module part1(clk,
+//I0,I1,I2,I3,
+Y);
+    input clk;
+    // input I0, I1, I2, I3;
+    output reg [3:0] Y;
+    
+    
+    wire [1:0] cout;
+    wire muxout;
+    reg [3:0] dout;
+    
+    // counter
+    c_counter_binary_0 c1 (
+  .CLK(clk),  // input wire CLK
+  .Q(cout)      // output wire [1 : 0] Q
+    );
+
+    // multiplexer
+    assign muxout = cout[1] ? (cout[0] ? I3:I2):(cout[0] ? I1:I0);
+    
+    // decoder
+    always@(cout or muxout)
+        if(muxout) 
+        begin
+            dout = 4'b0000;
+            dout[cout] = 1;
+        end
+        else
+        dout = 4'b0000;
+    
+    // latch
+    always@(clk)
+        if(clk)
+            Y <= dout;
+    
+    // ila
+    ila_0 g1 (
+	.clk(clk), // input wire clk
+	.probe0(Y) // input wire [3:0] probe0
+	);
+    
+    // vio
+    vio_0 g2 (
+  .clk(clk),                // input wire clk
+  .probe_out0({I0,I1,I2,I3})  // output wire [3 : 0] probe_out0
+  );
+    
+    
+endmodule
